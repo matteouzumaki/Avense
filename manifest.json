@@ -1,8 +1,8 @@
 {
-  "name": "Mes Revenus",
-  "short_name": "MesRevenus",
+  "name": "Avence",
+  "short_name": "Avence",
   "description": "Suivi de revenus quotidiens",
-  "start_url": "/",
+  "start_url": "/Avense/",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#6366f1",
