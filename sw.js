@@ -1,49 +1,50 @@
-var CACHE_NAME = 'mesrevenus-v2';
+var CACHE_NAME = 'mesrevenus-v3';
+var BASE = '/Avense';
 var ASSETS = [
-  '/',
-  '/index.html',
-  '/app.js',
-  '/manifest.json',
-  '/icon-192.png',
-  '/icon-512.png'
+  BASE + '/',
+  BASE + '/index.html',
+  BASE + '/app.js',
+  BASE + '/manifest.json',
+  BASE + '/icon-192.png',
+  BASE + '/icon-512.png'
 ];
 
-self.addEventListener('install', function (e) {
+self.addEventListener('install', function(e) {
   e.waitUntil(
-    caches.open(CACHE_NAME).then(function (cache) {
+    caches.open(CACHE_NAME).then(function(cache) {
       return cache.addAll(ASSETS);
     })
   );
   self.skipWaiting();
 });
 
-self.addEventListener('activate', function (e) {
+self.addEventListener('activate', function(e) {
   e.waitUntil(
-    caches.keys().then(function (names) {
+    caches.keys().then(function(names) {
       return Promise.all(
-        names.filter(function (n) { return n !== CACHE_NAME; })
-          .map(function (n) { return caches.delete(n); })
+        names.filter(function(n) { return n !== CACHE_NAME; })
+          .map(function(n) { return caches.delete(n); })
       );
     })
   );
   self.clients.claim();
 });
 
-self.addEventListener('fetch', function (e) {
+self.addEventListener('fetch', function(e) {
   e.respondWith(
-    caches.match(e.request).then(function (cached) {
-      return cached || fetch(e.request).then(function (response) {
+    caches.match(e.request).then(function(cached) {
+      return cached || fetch(e.request).then(function(response) {
         if (response.status === 200 && e.request.method === 'GET') {
           var clone = response.clone();
-          caches.open(CACHE_NAME).then(function (cache) {
+          caches.open(CACHE_NAME).then(function(cache) {
             cache.put(e.request, clone);
           });
         }
         return response;
       });
-    }).catch(function () {
+    }).catch(function() {
       if (e.request.destination === 'document') {
-        return caches.match('/index.html');
+        return caches.match(BASE + '/index.html');
       }
     })
   );
